@@ -1,4 +1,4 @@
-# Differential Neural Computer in PyTorch
+# Differentiable Neural Computer in PyTorch
 
 This is PyTorch port of DeepMind's [Differentiable Neural Computer (DNC)](https://github.com/deepmind/dnc).
 
