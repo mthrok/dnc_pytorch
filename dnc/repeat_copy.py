@@ -234,7 +234,7 @@ class RepeatCopy:
     def batch_size(self):
         return self._batch_size
 
-    def __call__(self):
+    def __call__(self, device=None):
         """Implements build method which adds ops to graph."""
 
         # short-hand for private fields.
@@ -360,6 +360,10 @@ class RepeatCopy:
         obs = torch.concat(obs_tensors, 1).reshape(obs_batch_shape)
         targ = torch.concat(targ_tensors, 1).reshape(targ_batch_shape)
         mask = torch.concat(mask_tensors, 0).reshape(mask_batch_trans_shape).T
+        if device is not None:
+            obs = obs.to(device)
+            targ = targ.to(device)
+            mask = mask.to(device)
         return DatasetTensors(obs, targ, mask)
 
     def cost(self, logits, targ, mask):

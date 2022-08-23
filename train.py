@@ -36,7 +36,7 @@ def _main():
         },
         output_size=dataset.target_size,
         clip_value=args.clip_value,
-    )
+    ).to(args.device)
 
     optimizer = torch.optim.RMSprop(dnc.parameters(), lr=args.lr, eps=args.eps)
 
@@ -48,6 +48,7 @@ def _main():
         args.report_interval,
         args.checkpoint_interval,
         args.checkpoint_dir,
+        args.device,
     )
 
 
@@ -59,10 +60,11 @@ def _run_train_loop(
     report_interval,
     checkpoint_interval,
     checkpoint_dir,
+    device,
 ):
     total_loss = 0
     for i in range(num_training):
-        batch = dataset()
+        batch = dataset(device=device)
         state = None
         outputs = []
         for inputs in batch.observations:
@@ -167,6 +169,12 @@ def _parse_args():
     )
 
     train_opts = parser.add_argument_group("Training Options")
+    train_opts.add_argument(
+        "--device",
+        type=torch.device,
+        default="cuda" if torch.cuda.is_available() else "cpu",
+        help="Device to perform the training.",
+    )
     train_opts.add_argument(
         "--num-training-iterations",
         type=int,
